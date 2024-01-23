@@ -5,8 +5,16 @@
 package it.polito.tdp.corsi;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+
+import it.polito.tdp.corsi.model.Corso;
+import it.polito.tdp.corsi.model.Divisione;
 import it.polito.tdp.corsi.model.Model;
+import it.polito.tdp.corsi.model.Studente;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -46,21 +54,104 @@ public class FXMLController {
 
     @FXML
     void corsiPerPeriodo(ActionEvent event) {
+    	String input = this.txtPeriodo.getText();
     	
+    	int inputNum = 0;
+    	
+    	try {
+    		inputNum = Integer.parseInt(input);
+    	} catch(NumberFormatException e) {
+    		this.txtRisultato.setText("Il valore inserito non è di tipo intero.");
+    		return;
+    	}
+    	
+    	if (inputNum < 1 || inputNum > 2) {
+    		this.txtRisultato.setText("Inserisci 1 o 2");
+    		return;
+    	}
+    	
+    	List<Corso> resultCorso = new ArrayList<Corso>();
+    	resultCorso = model.getCorsiByPeriod(inputNum);
+    	
+    	this.txtRisultato.clear();
+    	this.txtRisultato.setText("Ho trovato " + resultCorso.size() + " corsi.\n");
+    	
+    	for (Corso c : resultCorso) {
+    		this.txtRisultato.appendText(c+"\n");
+    	}
     }
 
     @FXML
     void numeroStudenti(ActionEvent event) {
     	
+    	String input = this.txtPeriodo.getText();
+    	
+    	int inputNum = 0;
+    	
+    	try {
+    		inputNum = Integer.parseInt(input);
+    	} catch(NumberFormatException e) {
+    		this.txtRisultato.setText("Il valore inserito non è di tipo intero.");
+    		return;
+    	}
+    	
+    	if (inputNum < 1 || inputNum > 2) {
+    		this.txtRisultato.setText("Inserisci 1 o 2");
+    		return;
+    	}
+    	
+    	Map<Corso, Integer> resultCorso = new HashMap<Corso, Integer>();
+    	resultCorso = model.getCorsiIscritti(inputNum);
+    	
+    	this.txtRisultato.clear();
+    	this.txtRisultato.setText("Ho trovato " + resultCorso.size() + " corsi.\n");
+    	
+    	for (Corso c : resultCorso.keySet()) {
+    		this.txtRisultato.appendText(c + " " + resultCorso.get(c) + "\n");
+    	}
+    	
     }
 
     @FXML
     void stampaDivisione(ActionEvent event) {
+    	
+    	String codins = this.txtCorso.getText();
+    	
+    	if (codins.isEmpty()) {
+    		this.txtRisultato.setText("Inserire il codice di un corso.");
+    		return;
+    	}
+    	
+    	List<Divisione> result = new ArrayList<Divisione>();
+    	result = model.getDivisioneStudenti(codins);
+    	
+    	this.txtRisultato.clear();
+    	
+    	for (Divisione d : result) {
+    		this.txtRisultato.appendText(d.getCDS() + " " + d.getnStudenti() + "\n");
+    	}
 
     }
 
     @FXML
     void stampaStudenti(ActionEvent event) {
+    	
+    	String codins = this.txtCorso.getText();
+    	
+    	if (codins.isEmpty()) {
+    		this.txtRisultato.setText("Inserire il codice di un corso.");
+    		return;
+    	}
+    	
+    	List<Studente> result = new ArrayList <Studente>();
+    	result = model.getIscrittiCorso(codins);
+    	
+    	this.txtRisultato.clear();
+    	this.txtRisultato.setText("Ho trovato " + result.size() + " studenti iscritti al corso.\n");
+    	
+    	for (Studente s : result) {
+    		this.txtRisultato.appendText(s + "\n");
+    	}
 
     }
 
